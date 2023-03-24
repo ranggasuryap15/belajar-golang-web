@@ -24,3 +24,18 @@ func TestRequestHeader(t *testing.T) {
 	body, _ := io.ReadAll(response.Body)
 	fmt.Println(string(body))
 }
+
+func ResponseHeader(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Add("X-Powered-By", "Generus Koding")
+	fmt.Fprint(writer, "OK")
+}
+
+func TestResponseHeader(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "http://localhost/", nil)
+	recorder := httptest.NewRecorder()
+
+	ResponseHeader(recorder, request)
+
+	poweredBy := recorder.Header().Get("x-powered-by")
+	fmt.Println(poweredBy)
+}
