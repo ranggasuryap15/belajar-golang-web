@@ -20,14 +20,14 @@ func FormPost(writer http.ResponseWriter, request *http.Request) {
 
 	firstName := request.PostForm.Get("first_name")
 	lastName := request.PostForm.Get("last_name")
-	
+
 	fmt.Fprintf(writer, "Hello %s %s", firstName, lastName)
 }
 
 func TestFormPost(t *testing.T) {
 	requestBody := strings.NewReader("first_name=Rangga&last_name=Prayoga")
 	request := httptest.NewRequest("POST", "http://localhost/", requestBody)
-	request.Header.Add("content-type", "application/x-www-form-urlencoded") // ini sudah menjadi standar content type-nya
+	request.Header.Add("content-type", "application/x-www-form-urlencoded") // ini sudah menjadi standar content type-nya atau sesuai dengan spesifikasinya
 	recorder := httptest.NewRecorder()
 
 	FormPost(recorder, request)
@@ -35,5 +35,4 @@ func TestFormPost(t *testing.T) {
 	response := recorder.Result()
 	body, _ := io.ReadAll(response.Body)
 	fmt.Println(string(body))
-	
 }
