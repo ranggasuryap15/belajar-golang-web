@@ -34,7 +34,7 @@ var resourceOK string
 var resourceNotFound string
 
 func ServeFileEmbed(writer http.ResponseWriter, request *http.Request) {
-	// lebih simpel dibandingkan tanpa menggunakan embed
+	// lebih simpel dibandingkan tanpa menggunakan embed tanpa perlu serve file
 	if request.URL.Query().Get("name") != "" {
 		fmt.Fprint(writer, resourceOK)
 	} else {
