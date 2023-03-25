@@ -2,7 +2,9 @@ package belajar_golang_web
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -39,4 +41,33 @@ func TestCookie(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestSetCookie(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "http://localhost:8080/?name=Rangga", nil)
+	recorder := httptest.NewRecorder()
+
+	SetCookie(recorder, request)
+
+	cookies := recorder.Result().Cookies()
+	for _, cookie := range cookies {
+		fmt.Printf("Cookie %s %s \n", cookie.Name, cookie.Value)
+	}
+}
+
+func TestGetCookie(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "http://localhost/", nil)
+	cookie := new(http.Cookie)
+	cookie.Name = "X-Generus-Name"
+	cookie.Value = "Rangga"
+	request.AddCookie(cookie)
+
+	recorder := httptest.NewRecorder()
+
+	GetCookie(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
 }
