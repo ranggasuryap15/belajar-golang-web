@@ -67,11 +67,39 @@ func TemplateFunctionCreateGlobal(writer http.ResponseWriter, request *http.Requ
 	})
 }
 
-func TestTemplateFunctionMap(t *testing.T) {
+func TestTemplateFunctionCreateGlobal(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
 	recorder := httptest.NewRecorder()
 
 	TemplateFunctionCreateGlobal(recorder, request)
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+	fmt.Println(string(body))
+}
+
+func TemplateFunctionCreateGlobalPipeline(writer http.ResponseWriter, request *http.Request) {
+	t := template.New("FUNCTION")
+	// harus registrasi dulu function yang ingin dibuat setelah itu baru parsing
+	t = t.Funcs(map[string]interface{}{
+		"sayHello": func(name string) string {
+			return "Hello " + name
+		},
+		"upper": func(value string) string {
+			return strings.ToUpper(value)
+		},
+	})
+
+	t = template.Must(t.Parse(`{{sayHello .Name | upper}}`))
+	t.ExecuteTemplate(writer, "FUNCTION", MyPage{
+		Name: "Rangga",
+	})
+}
+
+func TestTemplateFunctionCreateGlobalPipeline(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateFunctionCreateGlobalPipeline(recorder, request)
 	response := recorder.Result()
 	body, _ := io.ReadAll(response.Body)
 	fmt.Println(string(body))
