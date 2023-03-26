@@ -1,6 +1,8 @@
 package belajar_golang_web
 
 import (
+	"embed"
+	_ "embed"
 	"fmt"
 	"html/template"
 	"io"
@@ -47,6 +49,51 @@ func TestSimpleHtmlFile(t *testing.T) {
 	recorder := httptest.NewRecorder()
 
 	SimpleHTMLFile(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
+}
+
+func TemplateDirectory(writer http.ResponseWriter, request *http.Request) {
+	t, err := template.ParseGlob("./templates/*.gohtml")
+	if err != nil {
+		panic(err)
+	}
+
+	t.ExecuteTemplate(writer, "simple.gohtml", "Hello HTML Template")
+}
+
+func TestTemplateDirectory(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateDirectory(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
+}
+
+//go:embed templates/*.gohtml
+var templates embed.FS
+
+func TemplateEmbed(writer http.ResponseWriter, request *http.Request) {
+	t, err := template.ParseFS(templates, "templates/*.gohtml")
+	if err != nil {
+		panic(err)
+	}
+
+	t.ExecuteTemplate(writer, "simple.gohtml", "Hello Template Embed")
+}
+
+func TestTemplateEmbed(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateEmbed(recorder, request)
 
 	response := recorder.Result()
 	body, _ := io.ReadAll(response.Body)
