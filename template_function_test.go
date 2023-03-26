@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -46,6 +47,30 @@ func TestTemplateFunctionGlobal(t *testing.T) {
 	recorder := httptest.NewRecorder()
 
 	TemplateFunctionGlobal(recorder, request)
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+	fmt.Println(string(body))
+}
+
+func TemplateFunctionCreateGlobal(writer http.ResponseWriter, request *http.Request) {
+	t := template.New("FUNCTION")
+	t = t.Funcs(map[string]interface{}{
+		"upper": func(value string) string {
+			return strings.ToUpper(value)
+		},
+	})
+
+	t = template.Must(t.Parse(`{{upper .Name}}`))
+	t.ExecuteTemplate(writer, "FUNCTION", MyPage{
+		Name: "Rangga",
+	})
+}
+
+func TestTemplateFunctionMap(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateFunctionCreateGlobal(recorder, request)
 	response := recorder.Result()
 	body, _ := io.ReadAll(response.Body)
 	fmt.Println(string(body))
