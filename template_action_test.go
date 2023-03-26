@@ -30,3 +30,23 @@ func TestTemplateActionIf(t *testing.T) {
 	body, _ := io.ReadAll(response.Body)
 	fmt.Println(string(body))
 }
+
+func TemplateComparator(writer http.ResponseWriter, request *http.Request) {
+	t := template.Must(template.ParseFiles("./templates/comparator.gohtml"))
+	t.ExecuteTemplate(writer, "comparator.gohtml", map[string]interface{}{
+		"Title":      "Template Comparator",
+		"FinalValue": 100,
+	})
+}
+
+func TestTemplateComparator(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateComparator(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
+}
