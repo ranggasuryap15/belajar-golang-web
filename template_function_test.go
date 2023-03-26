@@ -54,6 +54,7 @@ func TestTemplateFunctionGlobal(t *testing.T) {
 
 func TemplateFunctionCreateGlobal(writer http.ResponseWriter, request *http.Request) {
 	t := template.New("FUNCTION")
+	// harus registrasi dulu function yang ingin dibuat setelah itu baru parsing
 	t = t.Funcs(map[string]interface{}{
 		"upper": func(value string) string {
 			return strings.ToUpper(value)
