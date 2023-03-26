@@ -50,3 +50,25 @@ func TestTemplateComparator(t *testing.T) {
 
 	fmt.Println(string(body))
 }
+
+func TemplateRange(writer http.ResponseWriter, request *http.Request) {
+	t := template.Must(template.ParseFiles("./templates/range.gohtml"))
+	t.ExecuteTemplate(writer, "range.gohtml", map[string]interface{}{
+		"Title": "Template Range",
+		"Hobbies": []string{
+			"Game", "Read", "Code",
+		},
+	})
+}
+
+func TestTemplateRange(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "localhost:8080", nil)
+	recorder := httptest.NewRecorder()
+
+	TemplateRange(recorder, request)
+
+	response := recorder.Result()
+	body, _ := io.ReadAll(response.Body)
+
+	fmt.Println(string(body))
+}
