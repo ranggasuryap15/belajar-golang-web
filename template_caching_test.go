@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-//go:embed templates/*.gothtml
+//go:embed templates/*.gohtml
 var templates embed.FS
 
 var myTemplates = template.Must(template.ParseFS(templates, "templates/*.gohtml"))

@@ -75,7 +75,6 @@ func TestTemplateDirectory(t *testing.T) {
 	fmt.Println(string(body))
 }
 
-//go:embed templates/*.gohtml
 //var templates embed.FS
 
 func TemplateEmbed(writer http.ResponseWriter, request *http.Request) {
