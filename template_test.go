@@ -1,8 +1,6 @@
 package belajar_golang_web
 
 import (
-	"embed"
-	_ "embed"
 	"fmt"
 	"html/template"
 	"io"
@@ -78,7 +76,7 @@ func TestTemplateDirectory(t *testing.T) {
 }
 
 //go:embed templates/*.gohtml
-var templates embed.FS
+//var templates embed.FS
 
 func TemplateEmbed(writer http.ResponseWriter, request *http.Request) {
 	t, err := template.ParseFS(templates, "templates/*.gohtml")
